@@ -6,17 +6,17 @@ import os
 
 #"""
 
-#rootdir = "F:\\Research\\L5IMBAL\\dataset\\tomcat-8.0.9"
-#rootdir = "F:\\Research\\L5IMBAL\\dataset\\cloudstack-4.3.0"
-rootdir = "F:\\Research\\L5IMBAL\\dataset\\hd"
-path = "F:\\Research\\L5IMBAL\\result\\"
+#rootdir = "F:\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\tomcat-8.0.9"
+#rootdir = "F:\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\cloudstack-4.3.0"
+rootdir = "F:\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\hd"
+path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\"
 
 """
 ##Server 
-rootdir = "E:\\Sangeeta\\Research\\L5IMBAL\\dataset\\tomcat-8.0.9"
-#rootdir = "E:\\Sangeeta\\Research\\L5IMBAL\\dataset\\cloudstack-4.3.0"
-rootdir = "E:\\Sangeeta\\Research\\L5IMBAL\\dataset\\hd"
-path = "E:\\Sangeeta\\Research\\L5IMBAL\\result\\"
+rootdir = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\tomcat-8.0.9"
+#rootdir = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\cloudstack-4.3.0"
+rootdir = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\hd"
+path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\result\\"
 
 #"""
 
