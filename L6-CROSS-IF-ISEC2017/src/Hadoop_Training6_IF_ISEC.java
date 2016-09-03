@@ -113,7 +113,7 @@ public class Hadoop_Training6_IF_ISEC
 	String db_name ="logging6_isec";
 	String userName = "root"; 
 	String password = "1234";
-	String table ="hd_if_training4";	
+	String table ="hd_if_training6_isec";	
     String listing_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\hd_java_files.txt";
     
     String non_logged_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\hd_non_log_if.txt";
