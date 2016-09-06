@@ -14,7 +14,7 @@ import utill6_isec
 ======================================================================================================"""
 
 #Project
-#"""
+"""
 project= "tomcat"
 title = 'Tomcat'
 #"""
@@ -23,7 +23,7 @@ project =  "cloudstack"
 title = 'CloudStack'
 #"""
 
-"""
+#"""
 project =  "hd"
 title = 'Hadoop'
 #"""
@@ -48,7 +48,7 @@ main_source_table = project+"_if_training6_isec"  # from this table we have to t
 path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\dataset\\"
 all_features_db_file_path=path+project+"-arff\\if\\all-features\\"+project+"_if_all_features.arff"
 num_features_db_file_path=path+project+"-arff\\if\\num-features\\"+project+"_if_num_features.arff"
-bool_features_db_file_path=path+project+"-arff\\if\\all-features\\"+project+"_if_bool_features.arff"
+bool_features_db_file_path=path+project+"-arff\\if\\bool-features\\"+project+"_if_bool_features.arff"
 #"""
 
 
@@ -313,9 +313,7 @@ def write_in_file_num_features(file_obj, tuple_val):
 # @uses: Function to write in file ceate arff files
 #=======================================================#
 def write_in_file_bool_features(file_obj, tuple_val):
-    
-    
-    
+      
    # t_if_expr                  = tuple_val[0]
     #n_loc_till_if              =  tuple_val[1]
     n_is_till_if_logged        = tuple_val[2]
@@ -505,8 +503,6 @@ def create_one_complete_bool_features(bool_features_db_file_path):
     
     file_obj.close()
     
-
-
 
 
 #===================================================#
