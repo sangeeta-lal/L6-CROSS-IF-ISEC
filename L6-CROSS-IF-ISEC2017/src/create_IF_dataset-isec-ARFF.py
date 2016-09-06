@@ -98,7 +98,7 @@ def write_header_all_features(file_obj,relation_name):
 def write_header_num_features(file_obj,relation_name):
     
     file_obj.write("@relation    "  + relation_name+"\n" )
-    #file_obj.write("@attribute is_if_logged {0,1}  "+"\n")    
+    file_obj.write("@attribute is_if_logged {0,1}  "+"\n")    
     file_obj.write("@attribute loc_till_if numeric "+"\n")
     #file_obj.write("@attribute is_till_if_logged {0,1} "+"\n")
     file_obj.write("@attribute till_if_log_count numeric "+"\n")

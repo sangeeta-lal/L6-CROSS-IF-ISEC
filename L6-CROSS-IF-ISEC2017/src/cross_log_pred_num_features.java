@@ -132,13 +132,13 @@ public void pre_process_num_data()
 	  tests = Filter.useFilter(tests, tfidf_filter);
  
      
-
+*/
      //2. Standarize  (not normalize because normalization is affected by outliers very easily)   	  
 	  Standardize  std_filter =  new Standardize();
 	  std_filter.setInputFormat(trains);
 	  trains= Filter.useFilter(trains,std_filter);     	  
 	 
-	  tests= Filter.useFilter(tests,std_filter);  	  
+	  tests= Filter.useFilter(tests,std_filter);  	
      
 
      //3. Discretizations
@@ -146,7 +146,7 @@ public void pre_process_num_data()
      dfilter.setInputFormat(trains);
      trains = Filter.useFilter(trains, dfilter);
      
-     tests = Filter.useFilter(tests, dfilter);	*/      
+     tests = Filter.useFilter(tests, dfilter);	 
      
 
 
