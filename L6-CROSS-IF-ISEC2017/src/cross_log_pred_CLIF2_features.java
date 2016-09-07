@@ -28,7 +28,7 @@ import weka.filters.unsupervised.attribute.Standardize;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 // This file will be used to ensemble based prediction using stacking of algorithms
-public class cross_log_pred_num_features
+public class cross_log_pred_CLIF2_features
 {
 
 
@@ -68,15 +68,27 @@ String target_project = "cloudstack";
 //String target_project="cloudstack";
 
 String db_name ="logging6_isec";
-String result_table = "cross_pred_num_feature_"+type;
+String result_table = "cross_pred_bool_feature_"+type;
 
-String source_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+source_project+"-arff\\"+type+"\\num-features\\"+source_project+"_"+type+"_num_features.arff";		
-String target_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+target_project+"-arff\\"+type+"\\num-features\\"+target_project+"_"+type+"_num_features.arff";
+String source_num_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+source_project+"-arff\\"+type+"\\num-features\\"+source_project+"_"+type+"_num_features.arff";		
+String target_num_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+target_project+"-arff\\"+type+"\\num-features\\"+target_project+"_"+type+"_num_features.arff";
 
-DataSource trainsource;
-DataSource testsource;
-Instances trains;
-Instances tests;
+String source_bool_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+source_project+"-arff\\"+type+"\\bool-features\\"+source_project+"_"+type+"_bool_features.arff";		
+String target_bool_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+target_project+"-arff\\"+type+"\\bool-features\\"+target_project+"_"+type+"_bool_features.arff";
+
+
+DataSource num_trainsource;
+DataSource bool_trainsource;
+
+DataSource num_testsource;
+DataSource bool_testsource;
+
+Instances num_trains;
+Instances bool_trains;
+
+Instances num_tests;
+Instances bool_tests;
+
 Evaluation result;
 
 int instance_count_source = 0;
@@ -91,17 +103,26 @@ public void read_file()
 try 
 	{
 	
-		trainsource = new DataSource(source_file_path);
-		trains = trainsource.getDataSet();
-		trains.setClassIndex(0);
+		num_trainsource = new DataSource(source_num_file_path);
+		num_trains = num_trainsource.getDataSet();
+		num_trains.setClassIndex(0);
 		
-		testsource = new DataSource(target_file_path);
-		tests = testsource.getDataSet();
+		num_testsource = new DataSource(target_num_file_path);
+		num_tests = num_testsource.getDataSet();		
+		num_tests.setClassIndex(0);
 		
-		tests.setClassIndex(0);
 		
-		instance_count_source = trains.numInstances();
-		instance_count_target = tests.numInstances();
+		bool_trainsource = new DataSource(source_bool_file_path);
+		bool_trains = bool_trainsource.getDataSet();
+		bool_trains.setClassIndex(0);
+		
+		bool_testsource = new DataSource(target_bool_file_path);
+		bool_tests = bool_testsource.getDataSet();		
+		bool_tests.setClassIndex(0);
+		
+		
+		instance_count_source = num_trains.numInstances();
+		instance_count_target = num_tests.numInstances();
 		
 		//System.out.println("Instance count source ="+ instance_count_source + "  Instance count target="+ instance_count_target);
    
@@ -146,7 +167,7 @@ public void pre_process_num_data()
      dfilter.setInputFormat(trains);
      trains = Filter.useFilter(trains, dfilter);
      
-     tests = Filter.useFilter(tests, dfilter);	 */
+     tests = Filter.useFilter(tests, dfilter);	*/ 
      
 
 
@@ -160,12 +181,14 @@ public void pre_process_num_data()
 
 
 //This function is used to train and test a using a given classifier
-public Evaluation cross_pred_random_forest() 
+public Evaluation cross_pred_random_forest_num_bool(float a, float b) 
 {
 	
 	
 Evaluation evaluation = null;
-RandomForest  m1 =  new RandomForest();
+RandomForest  num_m1 =  new RandomForest();
+RandomForest  bool_m1 =  new RandomForest();
+
 
 try
 {
@@ -173,10 +196,8 @@ try
 		
     m1.buildClassifier(trains);
 	evaluation= new Evaluation(trains);
-	//System.out.println("h1");
 	evaluation.evaluateModel(m1, tests);
 
-	//System.out.println("h2");
 
 } catch (Exception e) 
 {
@@ -286,12 +307,20 @@ private void learn_and_insert_random_forest(double[] precision,
 System.out.println("Computing  Random Forest for:"+ type);  
 	
 	//\\=========== Decision table=================================//\\			
-		for(int i=0; i<iterations; i++)
-			 {
+		
+      for(double a1=0; a1<=1.0; a1= a1+0.1)   
+      {
+    	  for(double b1=0; b1<=1.0;b1=b1+0.1)
+    	  {
+    		  for(int i=0; i<iterations; i++)
+    		  {
+			
 			    read_file();
 			   
-				pre_process_num_data();
-				result = cross_pred_random_forest();				
+				//pre_process_num_data();  //@Not needed
+			    //pre_process_bool_data(); //@Not needed
+			    
+				result = cross_pred_random_forest(a1, b1);				
 				
 				precision[i]         =   result.precision(1)*100;
 				recall[i]            =   result.recall(1)*100;
@@ -305,14 +334,17 @@ System.out.println("Computing  Random Forest for:"+ type);
 			}
 				  
 		   compute_avg_stdev_and_insert("Random Forest", precision, recall, accuracy, fmeasure , roc_auc );	   
-}
+
+    	  }//b1
+      }//a1   
+   }
 
 
 //This is the main function
 public static void main(String args[])
 {	  	
 
-	  cross_log_pred_num_features clps =  new cross_log_pred_num_features();
+	  cross_log_pred_CLIF2_features clps =  new cross_log_pred_CLIF2_features();
 	
 	  double precision[]   = new double[clps.iterations];
 	  double recall[]      = new double[clps.iterations];

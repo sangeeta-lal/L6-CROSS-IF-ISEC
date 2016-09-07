@@ -28,7 +28,7 @@ import weka.filters.unsupervised.attribute.Standardize;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 // This file will be used to ensemble based prediction using stacking of algorithms
-public class cross_log_pred_bool_features
+public class cross_log_pred_bool_model
 {
 
 
@@ -132,7 +132,7 @@ public void pre_process_num_data()
 	  tests = Filter.useFilter(tests, tfidf_filter);
  
      
-*/
+
      //2. Standarize  (not normalize because normalization is affected by outliers very easily)   	  
 	  Standardize  std_filter =  new Standardize();
 	  std_filter.setInputFormat(trains);
@@ -146,7 +146,7 @@ public void pre_process_num_data()
      dfilter.setInputFormat(trains);
      trains = Filter.useFilter(trains, dfilter);
      
-     tests = Filter.useFilter(tests, dfilter);	 
+     tests = Filter.useFilter(tests, dfilter);	 */
      
 
 
@@ -312,7 +312,7 @@ System.out.println("Computing  Random Forest for:"+ type);
 public static void main(String args[])
 {	  	
 
-	  cross_log_pred_bool_features clps =  new cross_log_pred_bool_features();
+	  cross_log_pred_bool_model clps =  new cross_log_pred_bool_model();
 	
 	  double precision[]   = new double[clps.iterations];
 	  double recall[]      = new double[clps.iterations];
