@@ -93,7 +93,6 @@ try
 		all_data.randomize(new java.util.Random(i));
 		
 		   
-		
 		int trainSize = (int) Math.round(all_data.numInstances() * 0.5);
 		int testSize = all_data.numInstances() - trainSize;
 		
