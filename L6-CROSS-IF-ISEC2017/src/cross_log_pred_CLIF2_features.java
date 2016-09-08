@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.trees.ADTree;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -89,7 +91,7 @@ Instances bool_trains;
 Instances num_tests;
 Instances bool_tests;
 
-Evaluation result;
+class_result result;
 
 int instance_count_source = 0;
 int instance_count_target =0;
@@ -181,22 +183,93 @@ public void pre_process_num_data()
 
 
 //This function is used to train and test a using a given classifier
-public Evaluation cross_pred_random_forest_num_bool(float a, float b) 
+public class_result cross_pred_random_forest_num_bool(double a1, double b1, double thres) 
 {
 	
-	
-Evaluation evaluation = null;
+class_result obj =  new class_result();
+
+Evaluation num_evaluation = null;
+Evaluation bool_evaluation = null;
+
 RandomForest  num_m1 =  new RandomForest();
 RandomForest  bool_m1 =  new RandomForest();
 
 
+double tp=0.0, fp=0.0, tn=0.0, fn=0.0;
+
 try
 {
+	
+    num_m1.buildClassifier(num_trains);
+	//num_evaluation= new Evaluation(num_trains);
+	
+    bool_m1.buildClassifier(bool_trains);
+	//bool_evaluation= new Evaluation(bool_trains);
 
+	
+	
+	for (int j = 0; j < num_tests.numInstances(); j++) 
+	 {
+	     
+		double num_score[] ;
+		double bool_score[];
 		
-    m1.buildClassifier(trains);
-	evaluation= new Evaluation(trains);
-	evaluation.evaluateModel(m1, tests);
+		Instance num_curr   =  num_tests.instance(j);  
+		Instance bool_curr  =  bool_tests.instance(j);  
+		
+		double actual = num_curr.classValue();// same for both bool and num and hence taken only once
+		
+		/*double actual1 = num_curr.classValue();// same for both bool and num and hence taken only once
+		double actual2 = num_curr.classValue();// same for both bool and num and hence taken only once
+		
+		if(actual1!=actual2)
+		{
+			System.out.println("fatal error!");
+		}*/
+		
+	
+		num_score= num_m1.distributionForInstance(num_curr);
+		bool_score= bool_m1.distributionForInstance(bool_curr);
+		 
+	 
+		// Find index of the model giving maximum value for the test instance
+	 
+		double predicted = 0;
+		double final_score  =  a1*num_score[1]+ b1*bool_score[1];
+		
+		if ( final_score <= thres) 
+			{
+				predicted = 0;
+			} else 
+			{
+				predicted = 1;
+			}
+	 
+		if (actual == 1) 
+		{
+	      if (predicted == 1) 
+	      {
+	       tp++;
+	      } else
+	      {
+	       fn++;
+	      }
+	     }
+
+	   else if (actual == 0)
+	     {
+	        if (predicted == 0) 
+	         {
+	          tn++;
+	        } else 
+	        {
+	         fp++;
+	       }
+	     }//else if
+
+	    // System.out.println("tp="+ tp+ "  fp"+ fp +" fn="+fn+" tn="+tn);
+	 
+        }//for
 
 
 } catch (Exception e) 
@@ -205,7 +278,11 @@ try
 	e.printStackTrace();
 }
 
-return evaluation;
+obj.tp  = tp;
+obj.fp = fp;
+obj.tn = tn;
+obj.fn = fn;
+return obj;
 
 }
 	
@@ -232,7 +309,7 @@ try {
 
 
 //This method computes the average value  and std. deviation and inserts them in a db
-public void compute_avg_stdev_and_insert(String classifier_name, double[] precision, double[] recall, double[] accuracy, double[] fmeasure, double[] roc_auc) 
+public void compute_avg_stdev_and_insert(String classifier_name, double a1, double b1, double thres,  double[] precision, double[] recall, double[] accuracy, double[] fmeasure, double[] roc_auc) 
 {
 
 // computes following metrics:
@@ -274,9 +351,9 @@ public void compute_avg_stdev_and_insert(String classifier_name, double[] precis
 		
   // System.out.println("model ="+classifier_name +"   Acc = "+ avg_accuracy + "  size="+ pred_10_db.size());
 	
-	String insert_str =  " insert into "+ result_table +"  values("+ "'"+ source_project+"','"+ target_project+"','"+ classifier_name+"',"+ trains.numInstances() + ","+ tests.numInstances()+","
-	                       + iterations+","+trains.numAttributes() +","+avg_precision+","+ std_precision+","+ avg_recall+","+ std_recall+","+avg_fmeasure+","+std_fmeasure+","+ avg_accuracy 
-	                       +","+std_accuracy+","+ avg_roc_auc+","+ std_roc_auc+" )";
+	String insert_str =  " insert into "+ result_table +"  values("+ "'"+ source_project+"','"+ target_project+"','"+ classifier_name+"',"+a1+","+b1+","+thres+","+ 
+	num_trains.numInstances() + ","+ num_tests.numInstances()+","   + iterations+","+(num_trains.numAttributes()+bool_trains.numAttributes()) +","+avg_precision+","+
+	std_precision+","+ avg_recall+","+ std_recall+","+avg_fmeasure+","+std_fmeasure+","+ avg_accuracy  +","+std_accuracy+","+ avg_roc_auc+","+ std_roc_auc+" )";
 	System.out.println("Inserting="+ insert_str);
 	
 	conn = initdb(db_name);
@@ -308,10 +385,18 @@ System.out.println("Computing  Random Forest for:"+ type);
 	
 	//\\=========== Decision table=================================//\\			
 		
-      for(double a1=0; a1<=1.0; a1= a1+0.1)   
+      for(double a1=0.0; a1<=1.0; a1= a1+0.01)   
       {
-    	  for(double b1=0; b1<=1.0;b1=b1+0.1)
+    	     	  
+    	  double b1= 1.0-a1;
+    	  double thres = 0.0;
+    	 
+    	  for( thres = 0.01; thres<=1.0; thres =  thres+0.01)
     	  {
+    		 // a1=  Math.round(a1);
+    		 // b1=Math.round(b1);
+    		 // thres = Math.round(thres);
+    		  
     		  for(int i=0; i<iterations; i++)
     		  {
 			
@@ -320,22 +405,23 @@ System.out.println("Computing  Random Forest for:"+ type);
 				//pre_process_num_data();  //@Not needed
 			    //pre_process_bool_data(); //@Not needed
 			    
-				result = cross_pred_random_forest(a1, b1);				
+				class_result result = cross_pred_random_forest_num_bool(a1, b1, thres);	
+				util6_met_isec ut6 =  new util6_met_isec();
 				
-				precision[i]         =   result.precision(1)*100;
-				recall[i]            =   result.recall(1)*100;
-				accuracy[i]          =   result.pctCorrect(); //not required to multiply by 100, it is already in percentage
-				fmeasure[i]          =   result.fMeasure(1)*100;
-				roc_auc[i]           =   result.areaUnderROC(1)*100;		
+				precision[i]         =    ut6.compute_precision(result.tp, result.fp, result.tn, result.fn); //  result.precision(1)*100;
+				recall[i]            =    ut6.compute_recall(result.tp, result.fp, result.tn, result.fn) ;      //result.recall(1)*100;
+				accuracy[i]          =    ut6.compute_accuracy(result.tp, result.fp, result.tn, result.fn) ;    //    result.pctCorrect(); //not required to multiply by 100, it is already in percentage
+				fmeasure[i]          =    ut6.compute_fmeasure(result.tp, result.fp, result.tn, result.fn) ;   // result.fMeasure(1)*100;
+				roc_auc[i]           =   0.0;  //result.areaUnderROC(1)*100;		
 			
 				//@ Un comment to see the evalauation results
 				//System.out.println(clp.result.toSummaryString());			
 					
 			}
 				  
-		   compute_avg_stdev_and_insert("Random Forest", precision, recall, accuracy, fmeasure , roc_auc );	   
+		   compute_avg_stdev_and_insert("Random Forest",  a1, b1,thres,  precision, recall, accuracy, fmeasure , roc_auc );	   
 
-    	  }//b1
+    	  }// for "thres"
       }//a1   
    }
 

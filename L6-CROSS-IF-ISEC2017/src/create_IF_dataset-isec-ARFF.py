@@ -14,7 +14,7 @@ import utill6_isec
 ======================================================================================================"""
 
 #Project
-"""
+#"""
 project= "tomcat"
 title = 'Tomcat'
 #"""
@@ -23,7 +23,7 @@ project =  "cloudstack"
 title = 'CloudStack'
 #"""
 
-#"""
+"""
 project =  "hd"
 title = 'Hadoop'
 #"""
