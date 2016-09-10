@@ -70,7 +70,7 @@ String target_project = "cloudstack";
 //String target_project="cloudstack";
 
 String db_name ="logging6_isec";
-String result_table = "cross_pred_num_bool_feature_"+type;
+String result_table = "cross_pred_CLIF_"+type;
 
 String source_num_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+source_project+"-arff\\"+type+"\\num-features\\"+source_project+"_"+type+"_num_features.arff";		
 String target_num_file_path = path+"L6-CROSS-IF-ISEC2017\\dataset\\"+target_project+"-arff\\"+type+"\\num-features\\"+target_project+"_"+type+"_num_features.arff";
