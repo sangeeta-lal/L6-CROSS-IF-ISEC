@@ -54,7 +54,7 @@ public class CloudStack_compute_pac_file_class_meth_log_density
 	 String password = "1234";
 	   
 	//@Note: create this file using create_file_listing.py
-	 String listing_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack-4.3.0_java_files.tx";
+	 String listing_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack-4.3.0_java_files.txt";
 	//String listing_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack-test.txt";
 
 	 String logged_file_path = "F:\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack_log_all.txt";
@@ -69,8 +69,8 @@ public class CloudStack_compute_pac_file_class_meth_log_density
 	 String password = "sangeetal";
 	
 	//@Note: create this file using create_file_listing.py
-	 String listing_file_path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack-4.3.0_java_files.tx";  
-	 String logged_file_path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\result\\clpoudstack_log_all.txt";
+	 String listing_file_path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack-4.3.0_java_files.txt";  
+	 String logged_file_path = "E:\\Sangeeta\\Research\\L6-CROSS-IF-ISEC2017\\result\\cloudstack_log_all.txt";
 	  String insert_table = "cloudstack_file_logging_density";
    //*/
 	 
